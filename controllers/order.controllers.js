@@ -1,9 +1,27 @@
+const CartItemModel = require('../models/cart.model.js');
 const OrderModel = require('../models/order.model.js');
 
 // Create order 
 const createOrder = async (req, res, next) => {
     try {
         const createdOrder = await OrderModel.create(req.body);
+
+        console.log(createdOrder._id);
+
+        const updatedCartItems = await CartItemModel.updateMany(
+            {   
+                status: 'pending',
+                customerId: createdOrder.customerId
+            },
+            {
+                orderId: createdOrder._id,
+                status: 'complete',
+                completedOn: new Date().toISOString()
+            }
+        );
+
+        console.log(updatedCartItems);
+
         res.status(200).json({ order: createdOrder });
     } catch (error) {
         next(error);
