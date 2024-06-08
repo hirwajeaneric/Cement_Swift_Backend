@@ -3,6 +3,7 @@ const UserModel = require('../models/user.model.js');
 
 // Update user 
 const updateUser = async (req, res, next) => {
+    console.log(req.body);
     try {
         if (req.body.password) {
             req.body.password = bcryptjs.hashSync(req.body.password, 10);
@@ -16,9 +17,13 @@ const updateUser = async (req, res, next) => {
                 new: true,
             }
         );
-        
-        const { password, ...rest } = updatedUser._doc; 
-        res.status(200).json({ user: rest, message: 'Successfully Updated Account' });
+
+        console.log(updatedUser);
+
+        if (updatedUser) {
+            const { password,...rest } = updatedUser._doc;
+            res.status(200).json({ user: rest, message: 'Successfully Updated Account' });
+        }
     } catch (error) {
         next(error);
     }

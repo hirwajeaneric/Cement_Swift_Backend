@@ -57,7 +57,7 @@ const OrderSchema = new Schema({
     delivery: {
         toBeDelivered: {
             type: Boolean,
-            required: true
+            required: false
         },
         province: {
             type: String,
@@ -71,16 +71,16 @@ const OrderSchema = new Schema({
             type: String,
             required: false,
         },
-        postalCode: {
-            type: String,
-            required: false,
-        },
-        location: {
+        streetAddress: {
             type: String,
             required: false,
         },
         deliveryDate: {
             type: Date,
+            required: false,
+        },
+        delivered: {
+            type: Boolean,
             required: false,
         }
     },

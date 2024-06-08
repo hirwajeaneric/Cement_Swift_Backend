@@ -1,6 +1,16 @@
 const OrderModel = require('../models/order.model.js');
 
-// Update order 
+// Create order 
+const createOrder = async (req, res, next) => {
+    try {
+        const createdOrder = await OrderModel.create(req.body);
+        res.status(200).json({ order: createdOrder });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Update order
 const updateOrder = async (req, res, next) => {
     try {
         const updatedOrder = await OrderModel.findByIdAndUpdate(req.query.id, { $set: req.body }, { new: true });
@@ -22,6 +32,9 @@ const listOrders = async (req, res, next) => {
 const clientOrders = async (req, res, next) => {
     try {
         const orders = await OrderModel.find({ customerId: req.query.customerId, status: req.query.status || 'paid' });
+        if (orders.length === 0) {
+            res.status(200).json({ orders: [] });
+        }
         res.status(200).json({ orders: orders });
     } catch (error) {
         next(error);
@@ -49,6 +62,7 @@ const deleteOrder = async (req, res, next) => {
 }
 
 module.exports = {
+    createOrder,
     updateOrder,
     deleteOrder,
     listOrders,

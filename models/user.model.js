@@ -25,11 +25,30 @@ const useSchema = new Schema({
             message: 'Role must be client or admin'
         },
         default: 'client'
+    },
+    province: {
+        type: String,
+    },
+    district: {
+        type: String,
+    },
+    city: {
+        type: String,
+    },
+    streetAddress: {
+        type: String,
+    },
+    delivered: {
+        type: Boolean,
+        default: false
+    },
+    deliveryDate: {
+        type: Date
     }
- }, {
+}, {
     timestamps: true
- });
+});
 
- const User = model('user', useSchema);
+const User = model('user', useSchema);
 
- module.exports = User;
+module.exports = User;
