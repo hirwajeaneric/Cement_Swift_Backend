@@ -5,7 +5,7 @@ const OrderSchema = new Schema({
         type: String,
         required: true,
         enum: {
-            values: ['paid', 'confirmed', 'shipped', 'recieved', 'returned', 'complaint'],
+            values: ['paid', 'confirmed', 'shipped', 'received', 'returned', 'complaint'],
             message: '{VALUE} is not a valid status'
         },
         default: 'paid'

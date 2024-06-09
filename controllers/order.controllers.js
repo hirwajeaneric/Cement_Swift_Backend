@@ -59,6 +59,18 @@ const clientOrders = async (req, res, next) => {
     }
 }
 
+const clientPurchases = async (req, res, next) => {
+    try {
+        const orders = await OrderModel.find({ customerId: req.query.customerId, status: req.query.status || 'shipped' });
+        if (orders.length === 0) {
+            res.status(200).json({ orders: [] });
+        }
+        res.status(200).json({ orders: orders });
+    } catch (error) {
+        next(error);
+    }
+}
+
 const findById = async (req, res, next) => {
     try {
         const foundOrder = await OrderModel.findById(req.query.id);
@@ -85,5 +97,6 @@ module.exports = {
     deleteOrder,
     listOrders,
     clientOrders,
+    clientPurchases,
     findById
 }
