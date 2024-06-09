@@ -24,7 +24,6 @@ const useSchema = new Schema({
             values: ['client', 'admin', 'deliverer'],
             message: 'Role must be client or admin'
         },
-        default: 'client'
     },
     province: {
         type: String,

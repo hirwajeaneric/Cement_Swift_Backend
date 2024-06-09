@@ -40,6 +40,17 @@ const listUsers = async (req, res, next) => {
     }
 }
 
+const listClients = async (req, res, next) => {
+    try {
+        const clients = await UserModel.find({ role: 'client'});
+        res.status(200).json({
+            clients: clients
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 const findById = async (req, res, next) => {
     try {
         const foundUser = await UserModel.findById(req.query.id);
@@ -66,5 +77,6 @@ module.exports = {
     updateUser,
     deleteUser,
     listUsers,
-    findById
+    findById,
+    listClients
 }
