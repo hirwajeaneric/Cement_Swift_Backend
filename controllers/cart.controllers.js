@@ -52,6 +52,15 @@ const listItems = async (req, res, next) => {
     }
 };
 
+const listAllItems = async (req, res, next) => {
+    try {
+        const items = await CartItemModel.find({});
+        res.status(200).json({ items });
+    } catch (error) {
+        next(error);
+    }
+}
+
 const findByOrderId = async (req, res, next) => {
     try {
         const items = await CartItemModel.find({ customerId: req.query.customerId, orderId: req.query.orderId });
@@ -61,14 +70,6 @@ const findByOrderId = async (req, res, next) => {
     }
 };
 
-const listAllItems = async (req, res, next) => {
-    try {
-        const items = await CartItemModel.find();
-        res.status(200).json({ items });
-    } catch (error) {
-        next(error);
-    }
-}
 
 // Update cartItem 
 const updateCartItem = async (req, res, next) => {

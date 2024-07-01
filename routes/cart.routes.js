@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.post('/add', addCartItem);
 router.get('/list', listItems);
+router.get('/getCartItems', listAllItems);
 router.get('/listAll', listAllItems);
 router.get('/findByOrderId', findByOrderId);
 router.put('/update', updateCartItem);
