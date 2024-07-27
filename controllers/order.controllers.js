@@ -1,15 +1,22 @@
 const CartItemModel = require('../models/cart.model.js');
 const OrderModel = require('../models/order.model.js');
+const ReportModel = require('../models/report.model.js');
 
 // Create order 
 const createOrder = async (req, res, next) => {
     try {
         const createdOrder = await OrderModel.create(req.body);
 
-        console.log(createdOrder._id);
+        // Fetch report according to the year or create one if there isn't any.
+        const reportOfThisYear = await ReportModel.findOne({ year: new Date().getFullYear() });
+        console.log(reportOfThisYear);
+        if (!reportOfThisYear) {
+            const newReport = new ReportModel({ year: new Date().getFullYear() });
+            await newReport.save();
+        };
 
         const updatedCartItems = await CartItemModel.updateMany(
-            {   
+            {
                 status: 'pending',
                 customerId: createdOrder.customerId
             },
@@ -20,6 +27,7 @@ const createOrder = async (req, res, next) => {
             }
         );
 
+        // Update report
         console.log(updatedCartItems);
 
         res.status(200).json({ order: createdOrder });

@@ -18,8 +18,6 @@ const updateUser = async (req, res, next) => {
             }
         );
 
-        console.log(updatedUser);
-
         if (updatedUser) {
             const { password,...rest } = updatedUser._doc;
             res.status(200).json({ user: rest, message: 'Successfully Updated Account' });

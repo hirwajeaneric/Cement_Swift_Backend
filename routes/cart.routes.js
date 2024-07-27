@@ -1,9 +1,10 @@
 const express = require('express');
-const { addCartItem, deleteCart, listItems, listAllItems, updateCartItem, completePayment, findByOrderId } = require('../controllers/cart.controllers.js');
+const { addCartItem, deleteCart, listItems, listAllItems, updateCartItem, completePayment, findByOrderId, listBoughtItems } = require('../controllers/cart.controllers.js');
 const router = express.Router();
 
 router.post('/add', addCartItem);
 router.get('/list', listItems);
+router.get('/getBoughtItems', listBoughtItems);
 router.get('/getCartItems', listAllItems);
 router.get('/listAll', listAllItems);
 router.get('/findByOrderId', findByOrderId);

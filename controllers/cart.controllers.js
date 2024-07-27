@@ -1,5 +1,6 @@
 const CartItemModel = require('../models/cart.model');
 const OrderModel = require('../models/order.model');
+const ReportModel = require('../models/report.model');
 
 const addCartItem = async (req, res, next) => {
     try {
@@ -55,6 +56,15 @@ const listItems = async (req, res, next) => {
 const listAllItems = async (req, res, next) => {
     try {
         const items = await CartItemModel.find({});
+        res.status(200).json({ items });
+    } catch (error) {
+        next(error);
+    }
+}
+
+const listBoughtItems = async (req, res, next) => {
+    try {
+        const items = await CartItemModel.find({ status: "complete" });
         res.status(200).json({ items });
     } catch (error) {
         next(error);
@@ -147,6 +157,7 @@ module.exports = {
     addCartItem,
     listItems,
     listAllItems,
+    listBoughtItems,
     findByOrderId,
     completePayment,
     updateCartItem,
