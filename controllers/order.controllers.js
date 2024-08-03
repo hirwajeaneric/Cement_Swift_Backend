@@ -2,6 +2,7 @@ const CartItemModel = require('../models/cart.model.js');
 const OrderModel = require('../models/order.model.js');
 const ReportModel = require('../models/report.model.js');
 const { updateReport } = require('../utils/helperFunctions.js');
+const sendEmail = require('../utils/sendEmail.js');
 
 // Create order 
 const createOrder = async (req, res, next) => {
@@ -30,6 +31,20 @@ const createOrder = async (req, res, next) => {
 
         const allUpdatedCartItems = await CartItemModel.find({ orderId: createdOrder._id });
         
+        let emailSubject = `Invoice ${createdOrder._id} for ${createdOrder.totalPrice} RWF Cement Purchase from CIMERWA PLC`;
+        let emailBody = `Dear ${createdOrder.customer.fullName}, \n\nThank for your order.\n\nOrder No: ${createdOrder._id}`;
+        
+        emailBody += `\nDate: ${new Date(createdOrder.createdAt).toDateString()}\n`;
+        allUpdatedCartItems.forEach(product => {
+            emailBody += `\n- ${product.productName}: ${product.quantity} units, ${product.price} RWF each = ${product.total} RWF`;
+        });
+        emailBody += `\nTotal: ${createdOrder.totalPrice} RWF`;
+        emailBody += `\n\nWe have recieved your order, and we will notify you for confirmation shortly.\nPlease don't hesitate to reach out if you have any question.\n\nBest regards,\nCement SWIFT`;
+
+        console.log(emailBody);
+
+        await sendEmail(createdOrder.customer.email, emailSubject, emailBody);
+
         // Update report with the updated cart items.
         const updatedReport = updateReport(allUpdatedCartItems, reportOfThisYear);
         await updatedReport.save();
