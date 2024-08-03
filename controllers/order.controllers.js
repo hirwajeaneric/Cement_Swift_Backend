@@ -39,7 +39,8 @@ const createOrder = async (req, res, next) => {
             emailBody += `\n- ${product.productName}: ${product.quantity} units, ${product.price} RWF each = ${product.total} RWF`;
         });
         emailBody += `\nTotal: ${createdOrder.totalPrice} RWF`;
-        emailBody += `\n\nWe have recieved your order, and we will notify you for confirmation shortly.\nPlease don't hesitate to reach out if you have any question.\n\nBest regards,\nCement SWIFT`;
+        emailBody += `\n\nDelivery address:\nProvince: ${createdOrder.delivery.province}\nDistrict: ${createdOrder.delivery.district}\nAddress: ${createdOrder.delivery.streetAddress}`
+        emailBody += `\n\nWe have recieved your order, and we will notify you for confirmation shortly.\nPlease don't hesitate to reach out if you have any question.\n\nBest regards,\nCIMERWA PLC`;
 
         console.log(emailBody);
 
@@ -58,7 +59,27 @@ const createOrder = async (req, res, next) => {
 // Update order
 const updateOrder = async (req, res, next) => {
     try {
+        const existingOrder = await OrderModel.findById(req.query.id);
         const updatedOrder = await OrderModel.findByIdAndUpdate(req.query.id, { $set: req.body }, { new: true });
+        
+        var recipient = updatedOrder.customer.email;
+        var subject = ``;
+        var body = ``;
+
+        if (updatedOrder.status !== existingOrder.status && updatedOrder.status === "confirmed" ) {
+            subject = `Order Confirmed.`;
+            body = `Dear ${updatedOrder.customer.fullName}, \n\nYour order No ${updatedOrder._id} of cement worth: ${updatedOrder.totalPrice} RWF has been confirmed and will be shipped and delivered on ${new Date(updatedOrder.delivery.deliveryDate).toDateString()}. \n\nWe will start processing your order shortly.\nPlease keep an eye on your order status. \n\nPlease don't hesitate to reach out if you have any question.\n\nBest regards,\nCIMERWA PLC`;
+            await sendEmail(recipient, subject, body);
+        }
+
+        if (updatedOrder.status !== existingOrder.status && updatedOrder.status === "shipped") {
+            subject = `Order Shipped.`;
+            body = `Dear ${updatedOrder.customer.fullName}, \n\nYour order No ${updatedOrder._id} of cement worth: ${updatedOrder.totalPrice} RWF has just been shipped for delivery and delivered.\n\nDelivery address:\nProvince: ${updatedOrder.delivery.province}\nDistrict: ${updatedOrder.delivery.district}\nAddress: ${updatedOrder.delivery.streetAddress} \n\nShipments may take between 5 to 20 hours to reach you according to your location. \n\nOnce delivery reaches you or is near your location, our delivery agent will notify you. \n\nPlease keep an eye on your order status. \nPlease don't hesitate to reach out if you have any question.\n\nBest regards,\nCIMERWA PLC`;
+            await sendEmail(recipient, subject, body);
+        }
+
+        console.log(body);
+
         res.status(200).json({ order: updatedOrder });
     } catch (error) {
         next(error);
