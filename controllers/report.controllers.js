@@ -11,8 +11,8 @@ const list = async (req, res, next) => {
 
 const findByYear = async (req, res, next) => {
     try {
-        const items = await ReportModel.find({ year: req.query.year });
-        res.status(200).json({ items });
+        const item = await ReportModel.findOne({ year: req.query.year });
+        res.status(200).json({ item });
     } catch (error) {
         next(error);
     }
