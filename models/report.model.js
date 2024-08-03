@@ -5,27 +5,27 @@ const ReportSchema = new Schema({
         type: Number,
         required: true
     },
-    premium: {
+    "Premium 42,5": {
         type: Array,
         required: true,
         default: [0,0,0,0,0,0,0,0,0,0,0,0]
     },
-    surebuild: {
+    "Surebuild": {
         type: Array,
         required: true,
         default: [0,0,0,0,0,0,0,0,0,0,0,0]
     },
-    surecem: {
+    "Surecem": {
         type: Array,
         required: true,
         default: [0,0,0,0,0,0,0,0,0,0,0,0]
     },
-    sureroad: {
+    "Sureroad": {
         type: Array,
         required: true,
         default: [0,0,0,0,0,0,0,0,0,0,0,0]
     },
-    surewall: {
+    "Surewall": {
         type: Array,
         required: true,
         default: [0,0,0,0,0,0,0,0,0,0,0,0]

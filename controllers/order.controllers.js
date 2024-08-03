@@ -1,6 +1,7 @@
 const CartItemModel = require('../models/cart.model.js');
 const OrderModel = require('../models/order.model.js');
 const ReportModel = require('../models/report.model.js');
+const { updateReport } = require('../utils/helperFunctions.js');
 
 // Create order 
 const createOrder = async (req, res, next) => {
@@ -8,14 +9,14 @@ const createOrder = async (req, res, next) => {
         const createdOrder = await OrderModel.create(req.body);
 
         // Fetch report according to the year or create one if there isn't any.
-        const reportOfThisYear = await ReportModel.findOne({ year: new Date().getFullYear() });
-        console.log(reportOfThisYear);
+        var reportOfThisYear = {};
+        reportOfThisYear = await ReportModel.findOne({ year: new Date().getFullYear() });
+
         if (!reportOfThisYear) {
-            const newReport = new ReportModel({ year: new Date().getFullYear() });
-            await newReport.save();
+            reportOfThisYear = await ReportModel.create({ year: new Date().getFullYear() });
         };
 
-        const updatedCartItems = await CartItemModel.updateMany(
+        await CartItemModel.updateMany(
             {
                 status: 'pending',
                 customerId: createdOrder.customerId
@@ -27,8 +28,11 @@ const createOrder = async (req, res, next) => {
             }
         );
 
-        // Update report
-        console.log(updatedCartItems);
+        const allUpdatedCartItems = await CartItemModel.find({ orderId: createdOrder._id });
+        
+        // Update report with the updated cart items.
+        const updatedReport = updateReport(allUpdatedCartItems, reportOfThisYear);
+        await updatedReport.save();
 
         res.status(200).json({ order: createdOrder });
     } catch (error) {
